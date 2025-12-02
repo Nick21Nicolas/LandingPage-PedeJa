@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PedeJá - Sistema de Gerenciamento de Pedidos</title>
+  <link rel="icon" type="image/x-icon" href="ico pedeja.ico">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Fredoka:wght@400;600;700&display=swap');
+
+    :root {
+      --primary-red: #D92323;
+      --primary-red-dark: #c51d1d;
+      --accent-yellow: #FFD23F;
+      --text-dark: #2C3E50;
+      --text-light: #5D6D7E;
+      --bg-cream: #FFF8DC;
+      --bg-light: #FFFFFF;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      color: var(--text-dark);
+      overflow-x: hidden;
+    }
+
+    /* Header/Navbar */
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      transition: all 0.3s ease;
+    }
+
+    nav {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .logo-container img {
+      width: 60px;
+      height: auto;
+      max-width: 100%;
+    }
+
+    .logo-text {
+      font-family: 'Fredoka', cursive;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--primary-red);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 30px;
+      align-items: center;
+    }
+
+    .nav-links.active {
+      display: flex;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-dark);
+      font-weight: 600;
+      transition: color 0.3s ease;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--primary-red);
+      transition: width 0.3s ease;
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .nav-links a:hover {
+      color: var(--primary-red);
+    }
+
+    .btn-primary {
+      background: var(--primary-red);
+      color: white;
+      padding: 12px 30px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      display: inline-block;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-red-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(217, 35, 35, 0.3);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--primary-red);
+      padding: 12px 30px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border: 2px solid var(--primary-red);
+      cursor: pointer;
+      display: inline-block;
+    }
+
+    .btn-secondary:hover {
+      background: var(--primary-red);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .mobile-menu {
+      display: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-dark);
+    }
+
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(135deg, rgba(217, 35, 35, 0.9) 0%, rgba(197, 29, 29, 0.9) 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: white;
+      padding: 100px 20px 50px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 30% 50%, rgba(255, 210, 63, 0.2) 0%, transparent 50%);
+    }
+
+    .hero-content {
+      max-width: 800px;
+      z-index: 1;
+      animation: fadeInUp 1s ease;
+    }
+
+    .hero h1 {
+      font-family: 'Fredoka', cursive;
+      font-size: 4rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+      line-height: 1.2;
+    }
+
+    .hero p {
+      font-size: 1.3rem;
+      margin-bottom: 40px;
+      opacity: 0.95;
+      line-height: 1.6;
+      padding: 0 20px;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .hero-buttons .btn-primary,
+    .hero-buttons .btn-secondary {
+      background: white;
+      color: var(--primary-red);
+      border: none;
+    }
+
+    .hero-buttons .btn-primary:hover {
+      background: var(--accent-yellow);
+      color: var(--text-dark);
+    }
+
+    .hero-buttons .btn-secondary {
+      background: transparent;
+      color: white;
+      border: 2px solid white;
+    }
+
+    .hero-buttons .btn-secondary:hover {
+      background: white;
+      color: var(--primary-red);
+    }
+
+    /* Features Section */
+    .features {
+      padding: 80px 20px;
+      background: var(--bg-light);
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      text-align: center;
+      font-family: 'Fredoka', cursive;
+      font-size: 2.5rem;
+      color: var(--primary-red);
+      margin-bottom: 20px;
+    }
+
+    .section-subtitle {
+      text-align: center;
+      color: var(--text-light);
+      font-size: 1.1rem;
+      margin-bottom: 60px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 40px;
+      margin-top: 60px;
+    }
+
+    .feature-card {
+      text-align: center;
+      padding: 40px 20px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 5px 30px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .feature-icon {
+      font-size: 3.5rem;
+      color: var(--primary-red);
+      margin-bottom: 20px;
+    }
+
+    .feature-card h3 {
+      font-family: 'Fredoka', cursive;
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      color: var(--text-dark);
+    }
+
+    .feature-card p {
+      color: var(--text-light);
+      line-height: 1.6;
+    }
+
+    /* Menu Highlights */
+    .menu-highlights {
+      padding: 80px 20px;
+      background: var(--bg-cream);
+    }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-top: 50px;
+    }
+
+    .menu-item {
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 5px 30px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .menu-item:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .menu-item-img {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+    }
+
+    .menu-item-icon-container {
+      width: 100%;
+      height: 250px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--primary-red) 0%, var(--primary-red-dark) 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .menu-item-icon-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 30% 50%, rgba(255, 210, 63, 0.2) 0%, transparent 50%);
+    }
+
+    .menu-item-icon {
+      font-size: 6rem;
+      color: white;
+      z-index: 1;
+      transition: transform 0.3s ease;
+    }
+
+    .menu-item:hover .menu-item-icon {
+      transform: scale(1.1);
+    }
+
+    .menu-item-info {
+      padding: 25px;
+    }
+
+    .menu-item h3 {
+      font-family: 'Fredoka', cursive;
+      font-size: 1.4rem;
+      margin-bottom: 10px;
+      color: var(--text-dark);
+    }
+
+    .menu-item p {
+      color: var(--text-light);
+      margin-bottom: 15px;
+      font-size: 0.95rem;
+    }
+
+    /* CTA Section */
+    .cta-section {
+      padding: 100px 20px;
+      background: linear-gradient(135deg, var(--primary-red) 0%, var(--primary-red-dark) 100%);
+      color: white;
+      text-align: center;
+    }
+
+    .cta-section h2 {
+      font-family: 'Fredoka', cursive;
+      font-size: 3rem;
+      margin-bottom: 20px;
+    }
+
+    .cta-section p {
+      font-size: 1.2rem;
+      margin-bottom: 40px;
+      opacity: 0.95;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .cta-buttons .btn-primary,
+    .cta-buttons .btn-secondary {
+      background: white;
+      color: var(--primary-red);
+      border: none;
+    }
+
+    .cta-buttons .btn-primary:hover {
+      background: var(--accent-yellow);
+      color: var(--text-dark);
+    }
+
+    .cta-buttons .btn-secondary {
+      background: transparent;
+      color: white;
+      border: 2px solid white;
+    }
+
+    .cta-buttons .btn-secondary:hover {
+      background: white;
+      color: var(--primary-red);
+    }
+
+    /* Footer */
+    footer {
+      background: var(--text-dark);
+      color: white;
+      padding: 60px 20px 30px;
+      text-align: center;
+    }
+
+    .footer-content {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .footer-logo {
+      font-family: 'Fredoka', cursive;
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: var(--accent-yellow);
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: #ccc;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer-links a:hover {
+      color: var(--accent-yellow);
+    }
+
+    .footer-social {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .footer-social a {
+      width: 45px;
+      height: 45px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+    }
+
+    .footer-social a:hover {
+      background: var(--primary-red);
+      transform: translateY(-5px);
+    }
+
+    .footer-copyright {
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 30px;
+      color: #999;
+      font-size: 0.9rem;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fade-in {
+      animation: fadeInUp 0.8s ease;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .hero h1 {
+        font-size: 3.2rem;
+      }
+
+      .hero p {
+        font-size: 1.2rem;
+      }
+
+      .section-title {
+        font-size: 2.2rem;
+      }
+
+      .features-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+      }
+
+      .menu-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
+      }
+
+      .cta-section h2 {
+        font-size: 2.5rem;
+      }
+
+      .cta-section p {
+        font-size: 1.1rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      nav {
+        padding: 12px 20px;
+      }
+
+      .logo-container img {
+        width: 50px;
+      }
+
+      .logo-text {
+        font-size: 1.5rem;
+      }
+
+      .nav-links {
+        display: none;
+        position: fixed;
+        top: 70px;
+        left: 0;
+        right: 0;
+        background: white;
+        flex-direction: column;
+        padding: 20px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        z-index: 999;
+        gap: 20px;
+      }
+
+      .nav-links.active {
+        display: flex;
+      }
+
+      .nav-links a {
+        width: 100%;
+        text-align: center;
+        padding: 10px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      }
+
+      .nav-links a:last-child {
+        border-bottom: none;
+      }
+
+      .mobile-menu {
+        display: block;
+        z-index: 1001;
+      }
+
+      .hero {
+        padding: 90px 20px 50px;
+        min-height: 90vh;
+      }
+
+      .hero h1 {
+        font-size: 2.5rem;
+        padding: 0 10px;
+      }
+
+      .hero p {
+        font-size: 1.1rem;
+        padding: 0 15px;
+      }
+
+      .section-title {
+        font-size: 2rem;
+        padding: 0 20px;
+      }
+
+      .section-subtitle {
+        font-size: 1rem;
+        padding: 0 20px;
+      }
+
+      .features,
+      .menu-highlights {
+        padding: 60px 20px;
+      }
+
+      .features-grid,
+      .menu-grid {
+        grid-template-columns: 1fr;
+        gap: 25px;
+        margin-top: 40px;
+      }
+
+      .feature-card {
+        padding: 30px 20px;
+      }
+
+      .feature-icon {
+        font-size: 3rem;
+      }
+
+      .feature-card h3 {
+        font-size: 1.3rem;
+      }
+
+      .menu-item-info {
+        padding: 20px;
+      }
+
+      .menu-item h3 {
+        font-size: 1.2rem;
+      }
+
+      .cta-section {
+        padding: 70px 20px;
+      }
+
+      .cta-section h2 {
+        font-size: 2rem;
+        padding: 0 15px;
+      }
+
+      .cta-section p {
+        font-size: 1rem;
+        padding: 0 15px;
+        margin-bottom: 30px;
+      }
+
+      .hero-buttons,
+      .cta-buttons {
+        flex-direction: column;
+        gap: 15px;
+        padding: 0 15px;
+      }
+
+      .hero-buttons .btn-primary,
+      .hero-buttons .btn-secondary,
+      .cta-buttons .btn-primary,
+      .cta-buttons .btn-secondary {
+        width: 100%;
+        max-width: 100%;
+        padding: 14px 25px;
+        font-size: 0.95rem;
+      }
+
+      .btn-primary,
+      .btn-secondary {
+        padding: 12px 25px;
+        font-size: 0.9rem;
+      }
+
+      footer {
+        padding: 50px 20px 25px;
+      }
+
+      .footer-logo {
+        font-size: 1.6rem;
+      }
+
+      .footer-logo img {
+        width: 40px !important;
+      }
+
+      .footer-links {
+        flex-direction: column;
+        gap: 15px;
+        margin-bottom: 25px;
+      }
+
+      .footer-social {
+        gap: 15px;
+        margin-bottom: 25px;
+      }
+
+      .footer-social a {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+      }
+
+      .footer-copyright {
+        padding-top: 20px;
+        font-size: 0.85rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      nav {
+        padding: 10px 15px;
+      }
+
+      .logo-container {
+        gap: 10px;
+      }
+
+      .logo-container img {
+        width: 45px;
+      }
+
+      .logo-text {
+        font-size: 1.3rem;
+      }
+
+      .mobile-menu {
+        font-size: 1.3rem;
+      }
+
+      .hero {
+        padding: 80px 15px 40px;
+        min-height: 85vh;
+      }
+
+      .hero h1 {
+        font-size: 2rem;
+        line-height: 1.3;
+        margin-bottom: 15px;
+      }
+
+      .hero p {
+        font-size: 1rem;
+        margin-bottom: 30px;
+        line-height: 1.5;
+      }
+
+      .hero-content {
+        max-width: 100%;
+      }
+
+      .features,
+      .menu-highlights,
+      .cta-section {
+        padding: 50px 15px;
+      }
+
+      .section-title {
+        font-size: 1.8rem;
+        margin-bottom: 15px;
+      }
+
+      .section-subtitle {
+        font-size: 0.95rem;
+        margin-bottom: 40px;
+      }
+
+      .features-grid,
+      .menu-grid {
+        gap: 20px;
+        margin-top: 30px;
+      }
+
+      .feature-card {
+        padding: 25px 15px;
+      }
+
+      .feature-icon {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+      }
+
+      .feature-card h3 {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+      }
+
+      .feature-card p {
+        font-size: 0.9rem;
+      }
+
+      .menu-item-icon-container {
+        height: 150px;
+      }
+
+      .menu-item-icon {
+        font-size: 3.5rem;
+      }
+
+      .menu-item-info {
+        padding: 18px;
+      }
+
+      .menu-item h3 {
+        font-size: 1.1rem;
+        margin-bottom: 8px;
+      }
+
+      .menu-item p {
+        font-size: 0.85rem;
+      }
+
+      .cta-section h2 {
+        font-size: 1.7rem;
+        margin-bottom: 15px;
+      }
+
+      .cta-section p {
+        font-size: 0.95rem;
+        margin-bottom: 25px;
+      }
+
+      .hero-buttons .btn-primary,
+      .hero-buttons .btn-secondary,
+      .cta-buttons .btn-primary,
+      .cta-buttons .btn-secondary {
+        padding: 12px 20px;
+        font-size: 0.9rem;
+      }
+
+      .footer-logo {
+        font-size: 1.4rem;
+      }
+
+      .footer-logo img {
+        width: 35px !important;
+        margin-right: 8px !important;
+      }
+
+      .footer-links a {
+        font-size: 0.9rem;
+      }
+
+      .footer-copyright {
+        font-size: 0.8rem;
+      }
+
+      .footer-copyright p {
+        font-size: 0.75rem;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .hero h1 {
+        font-size: 1.7rem;
+      }
+
+      .section-title {
+        font-size: 1.6rem;
+      }
+
+      .cta-section h2 {
+        font-size: 1.5rem;
+      }
+    }
+
+    /* Scroll behavior */
+    html {
+      scroll-behavior: smooth;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <nav>
+      <div class="logo-container">
+        <img src="logo pedeja.png" alt="PedeJá Logo">
+        <span class="logo-text">PedeJá</span>
+      </div>
+      <div class="nav-links">
+        <a href="#inicio">Início</a>
+        <a href="#funcionalidades">Funcionalidades</a>
+        <a href="#beneficios">Benefícios</a>
+        <a href="#contato">Contato</a>
+      </div>
+      <div class="mobile-menu">
+        <i class="fas fa-bars"></i>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero" id="inicio">
+    <div class="hero-content">
+      <h1>Gerencie seu negócio com inteligência e simplicidade</h1>
+      <p>O Pede Já é um sistema moderno e intuitivo para gerenciamento completo de pedidos, produtos e estoque. Controle total do seu negócio em uma única plataforma.</p>
+      <div class="hero-buttons">
+        <a href="#funcionalidades" class="btn-primary">
+          <i class="fas fa-rocket"></i> Conhecer o Sistema
+        </a>
+        <a href="#" class="btn-secondary" id="downloadDemoHero">
+          <i class="fas fa-download"></i> Baixar Demonstração
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features" id="funcionalidades">
+    <div class="container">
+      <h2 class="section-title">Funcionalidades Poderosas</h2>
+      <p class="section-subtitle">Tudo que você precisa para gerenciar seu negócio de forma profissional</p>
+      <div class="features-grid">
+        <div class="feature-card fade-in">
+          <div class="feature-icon">
+            <i class="fas fa-shopping-cart"></i>
+          </div>
+          <h3>Gestão de Pedidos</h3>
+          <p>Controle completo de todos os pedidos com acompanhamento em tempo real e histórico detalhado.</p>
+        </div>
+        <div class="feature-card fade-in">
+          <div class="feature-icon">
+            <i class="fas fa-boxes"></i>
+          </div>
+          <h3>Gerenciamento de Produtos</h3>
+          <p>Atualize itens, preços, imagens e descrições de forma rápida e intuitiva.</p>
+        </div>
+        <div class="feature-card fade-in">
+          <div class="feature-icon">
+            <i class="fas fa-warehouse"></i>
+          </div>
+          <h3>Controle de Estoque</h3>
+          <p>Monitore seu estoque automaticamente e receba alertas quando os produtos estiverem acabando.</p>
+        </div>
+        <div class="feature-card fade-in">
+          <div class="feature-icon">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <h3>Relatórios e Análises</h3>
+          <p>Visualize dados de vendas, produtos mais vendidos e insights valiosos para seu negócio.</p>
+        </div>
+        <div class="feature-card fade-in">
+          <div class="feature-icon">
+            <i class="fas fa-mobile-alt"></i>
+          </div>
+          <h3>Cardápio Digital</h3>
+          <p>Seus clientes visualizam um menu organizado, claro e fácil de navegar em qualquer dispositivo.</p>
+        </div>
+        <div class="feature-card fade-in">
+          <div class="feature-icon">
+            <i class="fas fa-bolt"></i>
+          </div>
+          <h3>Atualizações em Tempo Real</h3>
+          <p>Todas as mudanças são refletidas instantaneamente para administradores e clientes.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Benefits Section -->
+  <section class="menu-highlights" id="beneficios">
+    <div class="container">
+      <h2 class="section-title">Por que escolher o PedeJá?</h2>
+      <p class="section-subtitle">Benefícios que fazem a diferença no seu negócio</p>
+      <div class="menu-grid">
+        <div class="menu-item">
+          <div class="menu-item-icon-container">
+            <i class="fas fa-user-shield menu-item-icon"></i>
+          </div>
+          <div class="menu-item-info">
+            <h3>Painel Administrativo Completo</h3>
+            <p>Gerencie tudo em um só lugar com interface moderna e intuitiva</p>
+          </div>
+        </div>
+        <div class="menu-item">
+          <div class="menu-item-icon-container" style="background: linear-gradient(135deg, #FFD23F 0%, #FFC107 100%);">
+            <i class="fas fa-bolt menu-item-icon" style="color: var(--text-dark);"></i>
+          </div>
+          <div class="menu-item-info">
+            <h3>Rápido e Eficiente</h3>
+            <p>Sistema otimizado para máxima performance e produtividade</p>
+          </div>
+        </div>
+        <div class="menu-item">
+          <div class="menu-item-icon-container">
+            <i class="fas fa-smile menu-item-icon"></i>
+          </div>
+          <div class="menu-item-info">
+            <h3>Simples de Usar</h3>
+            <p>Interface pensada para facilitar o dia a dia, sem complicações</p>
+          </div>
+        </div>
+        <div class="menu-item">
+          <div class="menu-item-icon-container" style="background: linear-gradient(135deg, #FFD23F 0%, #FFC107 100%);">
+            <i class="fas fa-users menu-item-icon" style="color: var(--text-dark);"></i>
+          </div>
+          <div class="menu-item-info">
+            <h3>Experiência do Cliente</h3>
+            <p>Cardápio digital atraente que converte visitas em vendas</p>
+          </div>
+        </div>
+        <div class="menu-item">
+          <div class="menu-item-icon-container">
+            <i class="fas fa-lock menu-item-icon"></i>
+          </div>
+          <div class="menu-item-info">
+            <h3>Seguro e Confiável</h3>
+            <p>Seus dados protegidos com as melhores práticas de segurança</p>
+          </div>
+        </div>
+        <div class="menu-item">
+          <div class="menu-item-icon-container" style="background: linear-gradient(135deg, #FFD23F 0%, #FFC107 100%);">
+            <i class="fas fa-headset menu-item-icon" style="color: var(--text-dark);"></i>
+          </div>
+          <div class="menu-item-info">
+            <h3>Suporte Dedicado</h3>
+            <p>Equipe pronta para ajudar você a crescer e ter sucesso</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="container">
+      <h2>Pronto para transformar seu negócio?</h2>
+      <p>Entre em contato conosco e descubra como o PedeJá pode revolucionar a gestão do seu estabelecimento!</p>
+      <div class="cta-buttons">
+        <a href="#" class="btn-primary" id="downloadDemo">
+          <i class="fas fa-download"></i> Baixar Demonstração
+        </a>
+        <a href="#funcionalidades" class="btn-secondary">
+          <i class="fas fa-info-circle"></i> Saber Mais
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer id="contato">
+    <div class="footer-content">
+      <div class="footer-logo">
+        <img src="logo pedeja.png" alt="PedeJá" style="width: 50px; vertical-align: middle; margin-right: 10px;">
+        PedeJá
+      </div>
+      <div class="footer-links">
+        <a href="#inicio">Início</a>
+        <a href="#funcionalidades">Funcionalidades</a>
+        <a href="#beneficios">Benefícios</a>
+        <a href="#contato">Contato</a>
+      </div>
+      <div class="footer-social">
+        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+        <a href="#" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+      </div>
+      <div class="footer-copyright">
+        <p>&copy; 2025 PedeJá - Feito com ❤️ para você!</p>
+        <p style="margin-top: 10px; font-size: 0.85rem;">Todos os direitos reservados</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Download do projeto
+    function downloadProject() {
+      // Cria um link temporário para download
+      const link = document.createElement('a');
+      link.href = 'projeto-pedeja.zip'; // Caminho para o arquivo .zip do seu projeto
+      link.download = 'PedeJa-Sistema-Completo.zip';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // Adiciona event listeners aos botões de download
+    document.getElementById('downloadDemo').addEventListener('click', function(e) {
+      e.preventDefault();
+      downloadProject();
+    });
+
+    document.getElementById('downloadDemoHero').addEventListener('click', function(e) {
+      e.preventDefault();
+      downloadProject();
+    });
+
+    // Smooth scroll para links internos
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // Header scroll effect
+    let lastScroll = 0;
+    const header = document.querySelector('header');
+    
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.pageYOffset;
+      
+      if (currentScroll > 100) {
+        header.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.15)';
+      } else {
+        header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
+      }
+      
+      lastScroll = currentScroll;
+    });
+
+    // Fade in animation on scroll
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.feature-card, .menu-item').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(30px)';
+      el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      observer.observe(el);
+    });
+
+    // Mobile menu toggle
+    const mobileMenu = document.querySelector('.mobile-menu');
+    const navLinks = document.querySelector('.nav-links');
+    const menuIcon = mobileMenu?.querySelector('i');
+    
+    if (mobileMenu && navLinks) {
+      mobileMenu.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+        
+        // Troca o ícone entre hamburger e X
+        if (menuIcon) {
+          if (navLinks.classList.contains('active')) {
+            menuIcon.classList.remove('fa-bars');
+            menuIcon.classList.add('fa-times');
+          } else {
+            menuIcon.classList.remove('fa-times');
+            menuIcon.classList.add('fa-bars');
+          }
+        }
+      });
+
+      // Fecha o menu ao clicar em um link
+      navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          navLinks.classList.remove('active');
+          if (menuIcon) {
+            menuIcon.classList.remove('fa-times');
+            menuIcon.classList.add('fa-bars');
+          }
+        });
+      });
+
+      // Fecha o menu ao clicar fora dele
+      document.addEventListener('click', (e) => {
+        if (!mobileMenu.contains(e.target) && !navLinks.contains(e.target)) {
+          navLinks.classList.remove('active');
+          if (menuIcon) {
+            menuIcon.classList.remove('fa-times');
+            menuIcon.classList.add('fa-bars');
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>
